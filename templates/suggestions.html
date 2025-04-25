@@ -1,0 +1,72 @@
+{% extends "layout.html" %} {% block title %} Suggestions {% endblock %} {%
+block main %}
+
+<h1>Best College Suggestions</h1>
+<br />
+
+<!-- Dropdown for College Fees Range -->
+<div class="m-5">
+  <label for="fees-range">Select Fees Range:</label>
+  <select id="fees-range" class="form-control" onchange="filterColleges()">
+    <option value="all">All</option>
+    <option value="low">Below 1 Lakh</option>
+    <option value="medium">1 Lakh - 2 Lakh</option>
+    <option value="high">Above 2 Lakh</option>
+  </select>
+</div>
+
+<div class="m-5">
+  <!-- Table for displaying colleges -->
+  <table class="table table-bordered" id="college-table">
+    <thead>
+      <tr>
+        <th>Cutoff</th>
+        <th>Institute Name</th>
+        <th>Branch</th>
+        <th>Exam</th>
+        <th>Fees Structure (INR)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in clg_list %}
+      <tr data-fees="{{ row[8] }}">
+        <td>{{ row[1] }}</td>
+        <td>{{ row[3] }}</td>
+        <td>{{ row[4] }}</td>
+        <td>{{ row[5] }}</td>
+        <td>{{ row[8] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  function filterColleges() {
+    let range = document.getElementById("fees-range").value;
+    let rows = document.querySelectorAll("#college-table tbody tr");
+
+    rows.forEach((row) => {
+      let fees = parseFloat(row.getAttribute("data-fees"));
+
+      if (isNaN(fees)) {
+        row.style.display = "none"; // Hide rows with invalid fees data
+        return;
+      }
+
+      if (range === "all") {
+        row.style.display = "";
+      } else if (range === "low" && fees < 100000) {
+        row.style.display = "";
+      } else if (range === "medium" && fees >= 100000 && fees <= 200000) {
+        row.style.display = "";
+      } else if (range === "high" && fees > 200000) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+  }
+</script>
+
+{% endblock %}
